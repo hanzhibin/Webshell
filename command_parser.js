@@ -6,6 +6,7 @@ function command_parser()
     this.parse = function(cmd_array, term)
     {
         var name = cmd_array.shift();
+        var rpc = null;
 
         switch (name)
         {
@@ -13,13 +14,16 @@ function command_parser()
                 print_help_help(term);
                 break;
             case "machine":
-                print_help_machine(term);
+                //print_help_machine(term);
+                rpc = parse_machine_option(cmd_array);
                 break;
             case "job":
+                print_help_job(term);
                 break;
             default:
                 break;
         }
+        return rpc;
     }
 
 
@@ -53,8 +57,16 @@ function command_parser()
 
     }
 
-    function print_help_job()
+    function print_help_job( term )
     {
+        var foo = new $.JsonRpcClient(
+                                      { ajaxUrl: 'rpc_handler.php',
+                                        contentType:"application/json; charset=utf-8" });
+        foo.call(
+                'list_machine', [],
+                function(result) { term.echo('Foo bar answered: ' + $.toJSON(result)); },
+                function(error)  { term.echo('There was an error', error); }
+            );
     }
 
 
@@ -65,4 +77,39 @@ function command_parser()
         }); 
     }
 
+    function parse_machine_option(opts)
+    {
+        var args = [];
+        var rpc = {category:'machine', args:[], name:""};
+        $.each(opts, function(index, opt){
+             if (opt == '-h')
+             {
+                 print_help_machine();
+                 return;
+             }
+             else if (opt == '-s')
+             {
+                 rpc.name = 'machine_search';
+             }
+             else if (opt == '-l')
+             {
+                 rpc.name = 'machine_list';
+             }
+             else {
+                 rpc.args.push(opt);
+             }
+
+        });
+        if ( !rpc.name )
+        {
+            rpc.name = 'machine_get';
+            
+            if ( rpc.args.length == 0 )
+            {
+                rpc.name = 'machine_list';
+            }
+        }
+
+        return rpc;
+    }
 }

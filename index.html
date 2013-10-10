@@ -3,7 +3,10 @@
     <script src='jslib/jquery-1.10.2.js'         type='text/javascript'> </script>
     <script src='jslib/jquery.terminal-0.7.6.js' type='text/javascript'> </script>
     <script src='jslib/jquery.jsonrpcclient.js'  type='text/javascript'> </script>
+    <script src='jslib/jquery.json-2.4.js'       type='text/javascript'> </script>
     <script src='command_parser.js'              type='text/javascript'> </script>
+    <script src='command_handler.js'             type='text/javascript'> </script>
+    <script src='tmp_data.js'             type='text/javascript'> </script>
     <link href="css/jquery.terminal.css" rel="stylesheet"/>
     <script  type='text/javascript'>
     $(document).ready(
@@ -15,8 +18,11 @@
                         
                         var cmdline = command.split(' ');
                         var cmd  = $.trim(cmdline[0]);
+                        
                         p = new command_parser();
-                        p.parse(cmdline, term);
+                        h = new command_handler(p);
+                        rpc = p.parse(cmdline, term);
+                        h.run(rpc, null, null);
                         
                   },
                   {
