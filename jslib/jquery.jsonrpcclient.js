@@ -90,6 +90,7 @@
       data     : $.toJSON(request),
       dataType : 'json',
       cache    : false,
+      contentType:"application/json; charset=utf-8",
 
       success  : function(data) {
         if ('error' in data) error_cb(data.error);
