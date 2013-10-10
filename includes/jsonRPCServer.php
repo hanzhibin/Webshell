@@ -40,7 +40,8 @@ class jsonRPCServer {
 		if (
 			$_SERVER['REQUEST_METHOD'] != 'POST' || 
 			empty($_SERVER['CONTENT_TYPE']) ||
-			$_SERVER['CONTENT_TYPE'] != 'application/json'
+			//$_SERVER['CONTENT_TYPE'] != 'application/json'
+                        preg_match('/^application\/json/', $_SERVER['CONTENT_TYPE']) == 0 
 			) {
 			// This is not a JSON-RPC request
 			return false;
