@@ -1,7 +1,9 @@
 
-function command_parser()
+function command_parser(term)
 {
     var command = {};
+    
+    this.term = term;
 
     this.parse = function(cmd_array, term)
     {
@@ -19,6 +21,14 @@ function command_parser()
                 break;
             case "job":
                 print_help_job(term);
+                break;
+            case "test":
+                term.echo("-------------------------------------------------");
+                term.echo("id | name | ip | product_id | memsize | disksize");
+                term.echo("-------------------------------------------------");
+                break;
+            case 'scheme':
+                rpc = parse_scheme_option(cmd_array);
                 break;
             default:
                 break;
@@ -59,16 +69,20 @@ function command_parser()
 
     function print_help_job( term )
     {
-        var foo = new $.JsonRpcClient(
-                                      { ajaxUrl: 'rpc_handler.php',
-                                        contentType:"application/json; charset=utf-8" });
-        foo.call(
-                'list_machine', [],
-                function(result) { term.echo('Foo bar answered: ' + $.toJSON(result)); },
-                function(error)  { term.echo('There was an error', error); }
-            );
     }
 
+
+    function print_help_scheme( term )
+    {
+        var help = [
+                       "Usage: scheme [scheme]\n",
+                       "Description: Change the color scheme of current shell environment. There are only two schemes installed",
+                       "\t\t'white' and 'terminal'. you can switch bewteen them using this command.",
+                       "\n"
+                   ];
+        _print_help(help, term);
+
+    }
 
     function _print_help( helps, term )
     {
@@ -84,8 +98,8 @@ function command_parser()
         $.each(opts, function(index, opt){
              if (opt == '-h')
              {
-                 print_help_machine();
-                 return;
+                 print_help_machine(term);
+                 rpc.name='help';
              }
              else if (opt == '-s')
              {
@@ -111,5 +125,17 @@ function command_parser()
         }
 
         return rpc;
+    }
+
+    
+    function parse_scheme_option(opts)
+    {
+        if (!opts)
+            return;
+        var scheme = opts[0];
+        if ( !scheme )
+            print_help_scheme(term);
+        
+        scheme ? $("#hamsta_webshell").attr('class', scheme) : null;
     }
 }

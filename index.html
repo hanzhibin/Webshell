@@ -4,31 +4,37 @@
     <script src='jslib/jquery.terminal-0.7.6.js' type='text/javascript'> </script>
     <script src='jslib/jquery.jsonrpcclient.js'  type='text/javascript'> </script>
     <script src='jslib/jquery.json-2.4.js'       type='text/javascript'> </script>
+    <script src='ret_render.js'                  type='text/javascript'> </script>
     <script src='command_parser.js'              type='text/javascript'> </script>
     <script src='command_handler.js'             type='text/javascript'> </script>
-    <script src='tmp_data.js'             type='text/javascript'> </script>
-    <link href="css/jquery.terminal.css" rel="stylesheet"/>
+    <link href="css/terminal.css"         rel="stylesheet"/>
+    <link href="css/white.css"         rel="stylesheet"/>
     <script  type='text/javascript'>
+    var greeting_string = "Welcome to Hamsta web shell, enjoy it!\n"; 
     $(document).ready(
         function(){
             var prompts = ['hamsta'];
-            $('#term_demo').terminal(
+            $('#hamsta_webshell').terminal(
                   function(command, term) {
-        	        term.echo('DEBUG -- Command is:  ' + command + "</br>");
+        	        //term.echo('DEBUG -- Command is:  ' + command + "</br>");
                         
                         var cmdline = command.split(' ');
                         var cmd  = $.trim(cmdline[0]);
                         
-                        p = new command_parser();
-                        h = new command_handler(p);
+                        p = new command_parser(term);
+                        r = new printer(term);
+                        h = new command_handler(p, r);
                         rpc = p.parse(cmdline, term);
-                        h.run(rpc, null, null);
+                        if ( rpc && rpc.name != 'help')
+                            h.run(rpc);
                         
                   },
                   {
-                      greetings: 'Hamsta web shell, enjoy it!',
+                      greetings: greeting_string,
                       name: 'hamsta_shell',
-                      height: 500,
+                      height: window.innerHeight,
+                      history: true,
+                      outputLimit: 1000,
                       prompt: window.location.hostname+':' + get_prompt_string(prompts)
                   }
              );
@@ -53,6 +59,6 @@
     </script>
 </head>
     <body>
-        <div id='term_demo'></div>
+        <div id='hamsta_webshell'></div>
     </body>
 </html>
