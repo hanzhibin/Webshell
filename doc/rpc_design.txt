@@ -14,7 +14,7 @@ Machine related Remote Proceture Call.
     Function: machine_list
     Desc    : fetch machine list from server
     Argument: null
-    return:   list of machines or empty list.
+    return:   list of machines or empty .
 
 
     Function: machine_get
@@ -25,4 +25,19 @@ Machine related Remote Proceture Call.
     Function: machine_search
     Desc    : search machine with regular express.
     Argument: regular express 
-    return  : machine object or empty object.
+    return  : machine objects or empty .
+
+
+Job related Remote Proceture Call.
+    
+    Function: job_list
+    Desc    : fetch job list from server
+    Argument: null
+    return:   list of all or empty list.
+
+
+    Function: job_detail
+    Desc    : fetch a job detail from server
+    Argument: job_id
+    return:   show the job detail
+
